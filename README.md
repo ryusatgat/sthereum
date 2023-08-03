@@ -1,2 +1,2 @@
-# sthereum
+# STHEREUM
 STO demonstration
