@@ -29,5 +29,11 @@ CREATE INDEX ORDER_IDX3 ON ORDER(symbol, price);
 
 -- 체결 테이블
 CREATE TABLE CONTRACT (
-
+    contractid SERIAL PRIMARY KEY,
+    symbol VARCHAR(7) NOT NULL,
+    price NUMERIC NOT NULL,
+    quantity INT NOT NULL,
+    buy_pkey VARCHAR(256) NOT NULL,
+    sell_pkey VARCHAR(256) NOT NULL,
+    contracttime TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 );
