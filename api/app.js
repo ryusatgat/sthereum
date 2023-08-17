@@ -20,24 +20,15 @@ app.get('/login', (req, res) => {
         return;
     }
 
-    db.connect().then(() => {
         const insertQuery = `INSERT INTO loginhis (pkey) VALUES ('${pkey}')`;
         db.executeQuery(insertQuery)
             .then(() => {
                 res.json({ message: "Login successfully." });
-                res.redirect('/main');
             })
             .catch((insertError) => {
                 console.error(insertError);
                 res.status(500).json({ error: "An error occurred while login." });
             })
-            .finally(() => {
-                db.disconnect();
-            });
-    }).catch((connectError) => {
-        console.error(connectError);
-        res.status(500).json({ error: "Could not connect to the database." });
-    });
 });
 
 //Login 완료페이지
@@ -45,15 +36,6 @@ app.get('/main', (req, res) => {
     res.send('SThereum main\n');
 });
 
-db.connect().then(() => {
-    db.executeQuery("SELECT NOW() as time").then((queryResult, queryError) => {
-        if(queryError) {
-            console.error(queryError);
-        } else {
-            console.debug(queryResult.rows[0].time);
-        }        
-        db.disconnect();
-    });
-});
+db.connect();
 
-app.listen(PORT, () => console.log(`server is running ${PORT}`));   
+app.listen(PORT, () => console.log(`server is running ${PORT}`));
