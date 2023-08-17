@@ -1,10 +1,10 @@
 -- STO MASTER
 CREATE TABLE STO_MASTER (
-    symbol VARCHAR(7) PRIMARY KEY,
-    quantity NUMERIC NOT NULL,
-    listdate VARCHAR(8) -- YYYYMMDD,
-    regdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
-)
+    symbol VARCHAR(7) PRIMARY KEY,               -- STO SYMBOL
+    quantity NUMERIC NOT NULL,                   -- STO total quantity
+    listdate VARCHAR(8),                         -- YYYYMMDD
+    regdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 -- 잔고 테이블
 CREATE TABLE BALANCE (
     pkey VARCHAR(256) NOT NULL,
@@ -20,7 +20,8 @@ CREATE TABLE ORDER (
     symbol VARCHAR(7) NOT NULL,
     ordertype VARCHAR(1) NOT NULL, -- 1:buy, 2:sell, 3:modify, 4:cancel
     price NUMERIC NOT NULL,
-    quantity INT NOT NULL,
+    order_qty INT NOT NULL,
+    contract_qty INT DEFAULT 0,
     ordertime TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 );
 CREATE INDEX ORDER_IDX1 ON ORDER(pkey, symbol);
