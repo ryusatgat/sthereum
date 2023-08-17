@@ -1,10 +1,15 @@
 const express = require("express");
 const db = require("./lib/db");
+const contract = require("./sub/contract");
 const app = express();
 const PORT = process.env.PORT || 3080;
 
 app.get('/', (req, res) => {
-    res.send('SThereum is active\n');
+    res.send('SThereum is activated!\n');
+})
+
+app.get('/api/contract', (req, res) => {
+    contract.run(req, res)
 })
 
 db.connect().then(() => {
