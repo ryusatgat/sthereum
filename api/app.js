@@ -48,7 +48,7 @@ db.connect().then(() => {
             console.debug(queryResult.rows[0].time);
         }        
         db.disconnect();
-    });    
+    });
 });
 
 app.listen(PORT, () => console.log(`server is running ${PORT}`));   
