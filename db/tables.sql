@@ -1,3 +1,11 @@
+-- LOGIN HISTORY
+CREATE TABLE LOGINHIS (
+    pkey VARCHAR(256) NOT NULL,
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    logout_time TIMESTAMP,
+    PRIMARY KEY (pkey, login_time)
+);
+
 -- STO MASTER
 CREATE TABLE STO_MASTER (
     symbol VARCHAR(7) PRIMARY KEY,               -- STO SYMBOL
@@ -5,6 +13,7 @@ CREATE TABLE STO_MASTER (
     listdate VARCHAR(8),                         -- YYYYMMDD
     regdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 -- 잔고 테이블
 CREATE TABLE BALANCE (
     pkey VARCHAR(256) NOT NULL,

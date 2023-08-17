@@ -8,10 +8,14 @@ app.get('/', (req, res) => {
 })
 
 db.connect().then(() => {
-    db.executeQuery("SELECT NOW() as time").then((res, err) => {
-        console.debug(res.rows[0].time);
+    db.executeQuery("SELECT NOW() as time").then((queryResult, queryError) => {
+        if(queryError) {
+            console.error(queryError);
+        } else {
+            console.debug(queryResult.rows[0].time);
+        }        
         db.disconnect();
     });    
 });
 
-app.listen(PORT, () => console.log(`server is running ${PORT}`));
+app.listen(PORT, () => console.log(`server is running ${PORT}`));   
