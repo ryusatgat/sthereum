@@ -1,24 +1,28 @@
-const { Client } = require("pg");
-const client = new Client({ // for test...
-    user: "postgres",
-    host: "192.168.0.10",
-    database: "postgres",
-    password: "postgres",
-    port: 5432
-});
+const config = require('../config')
+const { Pool } = require('pg');
 
-async function connect() {
-    await client.connect();
-} 
+class DBPool {
+    constructor() {
+        this.client = new Pool(config.db);
+        this.client.connect().then(
+            console.log('Database is connected successfully')
+        );
+    }
 
-async function disconnect() {
-    return await client.end();
+    executeQuery(...args) {
+        return this.client.query(...args);
+    }
 }
 
-async function executeQuery(...args) {
-    return await client.query(...args);
+module.exports = class DB {
+    constructor() {
+        throw new Error('use getInstance method!');
+    }
+    
+    static getInstance() {
+        if (!this.instance) {
+            this.instance = new DBPool();
+        }
+        return this.instance;
+    }
 }
-
-exports.connect = connect;
-exports.disconnect = disconnect;
-exports.executeQuery = executeQuery;
