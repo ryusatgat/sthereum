@@ -23,4 +23,8 @@ app.get('/api/logout', (req, res) => {
     logout.run(req, res);    
 });
 
+//주문 처리
+
+
+
 app.listen(PORT, () => console.log(`server is running ${PORT}`));
