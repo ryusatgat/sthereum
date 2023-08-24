@@ -4,6 +4,7 @@ const login = require("./sub/login");
 const logout = require("./sub/logout");
 const order = require("./sub/order");
 const hoga = require("./sub/hoga");
+const orderlist = require("./sub/orderlist");
 
 const app = express();
 const PORT = process.env.PORT || 3080;
@@ -35,6 +36,16 @@ app.get('/api/order', (req, res) => {
 //호가 조회
 app.get('/api/hoga', (req, res) => {
     hoga.run(req, res); // 호가 조회 엔드포인트 추가
+});
+
+//체결내역 조회
+app.get('/api/contract', (req, res) => {
+    contract.run(req, res); 
+});
+
+//주문내역 조회
+app.get('/api/orderlist', (req, res) => {
+    orderlist.run(req, res);
 });
 
 app.listen(PORT, () => console.log(`server is running ${PORT}`));
