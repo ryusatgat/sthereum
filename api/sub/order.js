@@ -9,10 +9,23 @@ async function run(req, res) {
     const orderqty = req.query.orderqty;
     const orgorderid = re.quert.orgorderid;
 
+    if (!pkey || !symbol || !ordertype || !price || !orderqty) {
+        return res.status(400).json({ ret: -9, error: "Missing parameter(s)..." });
+    }
+
+    if( ordertype === '3' || ordertype === '4') {
+        if (!orgorderid) {
+            return res.status(400).json({ ret: -9, error: "Missing parameter(s)..." });
+        }
+    }
+
     try {
         await order.insertOrder(pkey, symbol, ordertype, price, orderqty, orgorderid);
-        await order.executeOrders()
-
+        await order.executeOrders(symbol);
+        await order.recreateHogaTable(symbol);
+    }
+    catch (error) {
+        console.error("An error occurred while inserting order:", error);
     }
 }
 
@@ -45,7 +58,7 @@ async function insertOrder(pkey, symbol, ordertype, price, order_qty, orgorderid
 
     try {
         if(ordertype === '1' || ordertype === '2'){
-            await db.executeQuery(query);
+            await db.executeQuery(insertQuery);
             console.log("Order inserted successfully.");
         }
         else if(ordertype === '3'){
@@ -62,12 +75,13 @@ async function insertOrder(pkey, symbol, ordertype, price, order_qty, orgorderid
     }
 }
 
-async function executeOrders() {
+async function executeOrders(symbol) {
     const db = DB.getInstance();
 
     try {
         const checkOrdersQuery = {
-            text: 'SELECT * FROM ORDER_STO WHERE ORDER_QTY <> CONTRACT_QTY ORDERORDER BY ordertime'
+            text: 'SELECT * FROM ORDER_STO WHERE SYMBOL = $1 AND ORDER_QTY <> CONTRACT_QTY ORDER BY ordertime',
+            values: [symbol]
         };
 
         const orders = await db.executeQuery(checkOrdersQuery);
@@ -188,3 +202,5 @@ async function updateHogaTable(symbol, ordertype, price, order_qty) {
         console.error("An error occurred while updating HOGA_STO:", error);
     }
 }
+
+exports.run = run;

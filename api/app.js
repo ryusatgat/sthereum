@@ -2,6 +2,9 @@ const express = require("express");
 const contract = require("./sub/contract");
 const login = require("./sub/login");
 const logout = require("./sub/logout");
+const order = require("./sub/order");
+const hoga = require("./sub/hoga");
+
 const app = express();
 const PORT = process.env.PORT || 3080;
 
@@ -24,7 +27,14 @@ app.get('/api/logout', (req, res) => {
 });
 
 //주문 처리
+//app.post('/api/order', (req, res) => {
+app.get('/api/order', (req, res) => {    
+    order.run(req, res);
+});
 
-
+//호가 조회
+app.get('/api/hoga', (req, res) => {
+    hoga.run(req, res); // 호가 조회 엔드포인트 추가
+});
 
 app.listen(PORT, () => console.log(`server is running ${PORT}`));
