@@ -9,7 +9,7 @@ async function run(req, res) {
     }
 
     const query = {
-        text: 'SELECT * FROM ORDER_STO WHERE PKEY = $1 AND ORDER_QTY <> CONTRACT_QTY ORDER BY ORDERTIME DESC',
+        text: 'SELECT ORDERID, PKEY, SYMBOL, ORDERTYPE, PRICE, ORDER_QTY - CONTRACT_QTY AS QTY FROM ORDER_STO WHERE PKEY = $1 AND ORDER_QTY <> CONTRACT_QTY ORDER BY ORDERTIME DESC',
         values: [pkey]
     }
 
