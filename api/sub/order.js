@@ -8,19 +8,32 @@ async function run(req, res) {
     const price = req.query.price;
     const orderqty = req.query.orderqty;
     const orgorderid = req.query.orgorderid;
+    const orgordertype = req.query.orgordertype;
 
     if (!pkey || !symbol || !ordertype || !price || !orderqty) {
         return res.status(400).json({ ret: -9, error: "Missing parameter(s)..." });
     }
 
+    // 정정, 취소 주문시 원주문에 대한 주문번호 필수
     if( ordertype === '3' || ordertype === '4') {
         if (!orgorderid) {
             return res.status(400).json({ ret: -9, error: "Missing parameter(s)..." });
         }
     }
 
+    // 정정 주문시 원주문의 매수,매도 구분 필수
+    if(ordertype === '3'){
+       if (!orgordertype) {
+            return res.status(400).json({ ret: -9, error: "Missing parameter(s)..." });
+       }
+    }
+
     try {
-        await insertOrder(pkey, symbol, ordertype, price, orderqty, orgorderid, res);
+        if(ordertype === '3'){
+            await insertOrder(pkey, symbol, orgordertype, price, orderqty, orgorderid, res);    
+        } else {
+            await insertOrder(pkey, symbol, ordertype, price, orderqty, orgorderid, res);
+        }
         await executeOrders(symbol);
         await recreateHogaTable(symbol);
     }
@@ -63,7 +76,6 @@ async function insertOrder(pkey, symbol, ordertype, price, order_qty, orgorderid
 
         if(ordertype === '3' || ordertype === '4'){
             // 주문 잔량 전체에 대한 정정,취소만 가능 부분 취소, 부분 정정 불가능
-            console.log('%d/%d', checkqty, order_qty);
             if ( checkqty != order_qty) {
                 return res.status(400).json({ ret: -12, error: "Invalid operation: new order_qty is diffrent with old order_qty." });
             }

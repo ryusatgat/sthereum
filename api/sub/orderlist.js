@@ -8,7 +8,7 @@ async function run(req, res) {
         return res.status(400).json({ ret: -9, error: "Missing parameter..." });
     }
 
-    const matchingOrdersQuery = {
+    const orderListQuery = {
         text: `
             SELECT pkey, symbol, ordertype, price, order_qty, orderid, ordertime
             FROM ORDER_STO
@@ -26,9 +26,9 @@ async function run(req, res) {
     
     try {
         // Execute the query
-        const matchingOrdersResult = await db.executeQuery(matchingOrdersQuery);
-        const matchingOrders = matchingOrdersResult.rows;
-        res.json({ ret: 0, message: "orderlist returned", data: matchingOrders });
+        const orderListResult = await db.executeQuery(orderListQuery);
+        const orderLists = orderListResult.rows;
+        res.json({ ret: 0, message: "orderlist returned", data: orderLists });
     } catch (queryError) {
         console.error(queryError);
         res.status(500).json({ ret: -10, error: "An error occurred while retrieving order list" });

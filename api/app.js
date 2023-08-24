@@ -5,6 +5,7 @@ const logout = require("./sub/logout");
 const order = require("./sub/order");
 const hoga = require("./sub/hoga");
 const orderlist = require("./sub/orderlist");
+const remainorder = require("./sub/remainorder");
 
 const app = express();
 const PORT = process.env.PORT || 3080;
@@ -45,5 +46,8 @@ app.get('/api/orderlist', (req, res) => {
 });
 
 //미체결내역 조회
+app.get('/api/remainorder', (req, res) => {
+    remainorder.run(req, res);
+});
 
 app.listen(PORT, () => console.log(`server is running ${PORT}`));
