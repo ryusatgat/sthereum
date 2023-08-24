@@ -20,7 +20,7 @@ async function run(req, res) {
     }
 
     try {
-        await insertOrder(pkey, symbol, ordertype, price, orderqty, orgorderid);
+        await insertOrder(pkey, symbol, ordertype, price, orderqty, orgorderid, res);
         await executeOrders(symbol);
         await recreateHogaTable(symbol);
     }
@@ -29,7 +29,7 @@ async function run(req, res) {
     }
 }
 
-async function insertOrder(pkey, symbol, ordertype, price, order_qty, orgorderid) {
+async function insertOrder(pkey, symbol, ordertype, price, order_qty, orgorderid, res) {
     const db = DB.getInstance();
 
     //매수, 매도 주문일 경우
@@ -48,14 +48,33 @@ async function insertOrder(pkey, symbol, ordertype, price, order_qty, orgorderid
     const deleteQuery = {
         text: 'DELETE FROM ORDER_STO WHERE ORDERID = $1',
         values: [orgorderid]
-    }
+    };
+
+    //정정, 취소 수량 확인
+    const checkPossibilityQuery = {
+        text: 'SELECT order_qty, contract_qty FROM ORDER_STO WHERE ORDERID = $1',
+        values: [orgorderid]
+    };
 
     try {
-        if(ordertype === '1' || ordertype === '2' || ordertype === '3')
-        await db.executeQuery(insertQuery);
-        console.log("Order inserted successfully.");
+        const orders = await db.executeQuery(checkPossibilityQuery);
+        const order = orders.rows[0];
+        const checkqty = order.order_qty - order.contract_qty;
 
-        if(ordertype === '3'){
+        if(ordertype === '3' || ordertype === '4'){
+            // 주문 잔량 전체에 대한 정정,취소만 가능 부분 취소, 부분 정정 불가능
+            console.log('%d/%d', checkqty, order_qty);
+            if ( checkqty != order_qty) {
+                return res.status(400).json({ ret: -12, error: "Invalid operation: new order_qty is diffrent with old order_qty." });
+            }
+        }
+
+        if(ordertype === '1' || ordertype === '2' || ordertype === '3'){
+            await db.executeQuery(insertQuery);
+            console.log("Order inserted successfully.");
+        }
+        
+        if(ordertype === '3'){        
             await db.executeQuery(insertChangeFromOrderQuery);
             await db.executeQuery(deleteQuery);
             console.log("Order modified successfully");
