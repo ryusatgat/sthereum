@@ -23,10 +23,11 @@ async function main() {
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   const Token = await ethers.getContractFactory("Token");
-  const token = await Token.deploy();
+  const token = await Token.deploy("hanwoo sto","HAN");
   await token.deployed();
 
   console.log("Token address:", token.address);
+  console.log("Token address:", await token.totalSupply());
 
   // We also save the contract's artifacts and address in the frontend directory
   saveFrontendFiles(token);
@@ -34,7 +35,7 @@ async function main() {
 
 function saveFrontendFiles(token) {
   const fs = require("fs");
-  const contractsDir = path.join(__dirname, "..", "frontend", "src", "contracts");
+  const contractsDir = path.join(__dirname, "..", "front", "src", "contracts");
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir);
