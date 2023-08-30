@@ -18,6 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import Link from 'next/link';
 
 const drawerWidth = 240;
 
@@ -81,12 +82,6 @@ export default function PersistentDrawerLeft() {
     setOpen(false);
   };
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      console.log('3초가 지났습니다');
-    }, 3000);   
-  }, []);
-
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -102,7 +97,7 @@ export default function PersistentDrawerLeft() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Persistent drawer
+            SThereum
           </Typography>
         </Toolbar>
       </AppBar>
@@ -125,23 +120,25 @@ export default function PersistentDrawerLeft() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
-          {['거래하기', '잔고', '이체'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
+        <List>        
+          {[{href:'/transactions', title: '거래하기'}, {href:'/volumes', title: '잔고'}, {href:'/move', title: '이체'}].map((items, index) => (            
+              <ListItem key={items.title} disablePadding>
+                <Link href={items.href}>
+                <ListItemButton>
+                  <ListItemIcon>
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={items.title} />
+                </ListItemButton>
+                </Link>
+              </ListItem>            
           ))}
         </List>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
         <Typography paragraph>
-          디자인 중...
+          <Link href="/transactions">거래하기</Link>
         </Typography>
       </Main>
     </Box>
