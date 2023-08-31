@@ -44,6 +44,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
     string private _name;
     string private _symbol;
+    string private _description;
 
     /**
      * @dev Sets the values for {name} and {symbol}.
@@ -51,9 +52,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor(string memory name_, string memory symbol_) {
+    constructor(string memory name_, string memory symbol_, string memory description_) {
         _name = name_;
         _symbol = symbol_;
+        _description = description_;
     }
 
     /**
@@ -61,6 +63,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      */
     function name() public view virtual override returns (string memory) {
         return _name;
+    }
+
+    function description() public view virtual override returns (string memory) {
+        return _description;
     }
 
     /**
@@ -248,11 +254,11 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      *
      * - `account` cannot be the zero address.
      */
-    function _mint(address account, uint256 amount) internal virtual {
+    function _mint(address account, uint256 amount, string memory description___) internal virtual {
         require(account != address(0), "ERC20: mint to the zero address");
 
         _beforeTokenTransfer(address(0), account, amount);
-
+        
         _totalSupply += amount;
         unchecked {
             // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
@@ -261,6 +267,8 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         emit Transfer(address(0), account, amount);
 
         _afterTokenTransfer(address(0), account, amount);
+
+        _description = description___;
     }
 
     /**
